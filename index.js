@@ -163,6 +163,21 @@ app.post('/report-savings', async (req, res) => {
   }
 });
 
+// POST /regulate - Manually end the stress event and return grid to normal
+app.post('/regulate', async (req, res) => {
+  try {
+    console.log('🛠️ Regulating grid: setting status to normal');
+    gridStatus = "normal";
+    return res.json({
+      success: true,
+      message: 'Grid regulated to normal.'
+    });
+  } catch (error) {
+    console.error('❌ Error regulating grid:', error);
+    return res.status(500).json({ success: false, message: 'Failed to regulate grid.', error: error.message });
+  }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({

@@ -136,6 +136,19 @@ Submits proof of energy savings to the oracle.
 }
 ```
 
+### POST `/regulate`
+Manually ends the stress event and sets the grid back to `normal` (no on-chain call in mock mode).
+
+**Request:** No body required
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Grid regulated to normal."
+}
+```
+
 ## Architecture
 
 - **AI Agent Wallet**: Triggers grid stress events on the smart contract

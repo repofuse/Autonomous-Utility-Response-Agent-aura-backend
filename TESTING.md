@@ -2,24 +2,6 @@
 
 This guide will walk you through testing all endpoints of the Aura Protocol mock backend server.
 
-## Quick Start: Mock Mode (no blockchain required)
-
-1. Create `.env` with:
-
-   ```env
-   USE_MOCK=true
-   PORT=3001
-   ```
-
-2. Start the server:
-
-   ```bash
-   npm start
-   ```
-
-3. Proceed with the tests below. Responses will include fake `transactionHash` values and the `/health` endpoint will show `mode: "mock"`.
-
----
 
 
 Expected output:
@@ -46,7 +28,7 @@ Endpoints:
 
 **Request:**
 ```bash
-curl http://localhost:3001/health
+curl http://https://aura-backend-5hi0.onrender.com/health
 ```
 
 **Expected Response:**
@@ -69,7 +51,7 @@ curl http://localhost:3001/health
 
 **Request:**
 ```bash
-curl http://localhost:3001/grid-status
+curl http://https://aura-backend-5hi0.onrender.com/grid-status
 ```
 
 **Expected Response:**
@@ -89,7 +71,7 @@ This endpoint triggers the AI Agent to create a grid stress event on-chain.
 
 **Request:**
 ```bash
-curl -X POST http://localhost:3001/simulate-stress-event \
+curl -X POST http://https://aura-backend-5hi0.onrender.com/simulate-stress-event \
   -H "Content-Type: application/json"
 ```
 
@@ -125,7 +107,7 @@ Waiting for confirmation...
 
 **Request:**
 ```bash
-curl http://localhost:3001/grid-status
+curl http://https://aura-backend-5hi0.onrender.com/grid-status
 ```
 
 **Expected Response:**
@@ -145,7 +127,7 @@ This endpoint allows IoT devices to report their energy savings to the Oracle.
 
 **Request:**
 ```bash
-curl -X POST http://localhost:3001/report-savings \
+curl -X POST http://https://aura-backend-5hi0.onrender.com/report-savings \
   -H "Content-Type: application/json" \
   -d '{
     "deviceAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
@@ -187,7 +169,7 @@ Waiting for confirmation...
 
 **Request:**
 ```bash
-curl http://localhost:3001/grid-status
+curl http://https://aura-backend-5hi0.onrender.com/grid-status
 ```
 
 **Expected Response:**
@@ -201,33 +183,55 @@ curl http://localhost:3001/grid-status
 
 ---
 
+### 7. Manually Regulate (End Stress Without IoT)
+
+Use this if you want to end the stress event manually (e.g., during demo):
+
+**Request:**
+```bash
+curl -s -X POST BASE_URL/regulate
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "message": "Grid regulated to normal."
+}
+```
+
+Then verify:
+```bash
+curl -s BASE_URL/grid-status
+```
+
 ## Complete Demo Flow Test
 
 Run these commands in sequence to test the complete flow:
 
 ```bash
 # 1. Check server health
-curl http://localhost:3001/health
+curl http://https://aura-backend-5hi0.onrender.com/health
 
 # 2. Check initial grid status (should be "normal")
-curl http://localhost:3001/grid-status
+curl http://https://aura-backend-5hi0.onrender.com/grid-status
 
 # 3. Trigger stress event
-curl -X POST http://localhost:3001/simulate-stress-event
+curl -X POST http://https://aura-backend-5hi0.onrender.com/simulate-stress-event
 
 # 4. Verify grid is now stressed
-curl http://localhost:3001/grid-status
+curl http://https://aura-backend-5hi0.onrender.com/grid-status
 
 # 5. Wait a few seconds for the blockchain transaction to confirm...
 sleep 5
 
 # 6. Report savings (replace address with your test device address)
-curl -X POST http://localhost:3001/report-savings \
+curl -X POST http://https://aura-backend-5hi0.onrender.com/report-savings \
   -H "Content-Type: application/json" \
   -d '{"deviceAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0", "savings": 50}'
 
 # 7. Verify grid is back to normal
-curl http://localhost:3001/grid-status
+curl http://https://aura-backend-5hi0.onrender.com/grid-status
 ```
 
 ---
@@ -238,7 +242,7 @@ curl http://localhost:3001/grid-status
 
 **Request:**
 ```bash
-curl -X POST http://localhost:3001/report-savings \
+curl -X POST http://https://aura-backend-5hi0.onrender.com/report-savings \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
@@ -262,20 +266,20 @@ If you prefer using Postman:
 Create these requests:
 
 1. **GET Health Check**
-   - URL: `http://localhost:3001/health`
+   - URL: `http://https://aura-backend-5hi0.onrender.com/health`
    - Method: GET
 
 2. **GET Grid Status**
-   - URL: `http://localhost:3001/grid-status`
+   - URL: `http://https://aura-backend-5hi0.onrender.com/grid-status`
    - Method: GET
 
 3. **POST Simulate Stress Event**
-   - URL: `http://localhost:3001/simulate-stress-event`
+   - URL: `http://https://aura-backend-5hi0.onrender.com/simulate-stress-event`
    - Method: POST
    - Headers: `Content-Type: application/json`
 
 4. **POST Report Savings**
-   - URL: `http://localhost:3001/report-savings`
+   - URL: `http://https://aura-backend-5hi0.onrender.com/report-savings`
    - Method: POST
    - Headers: `Content-Type: application/json`
    - Body (raw JSON):
@@ -350,27 +354,27 @@ echo "🧪 Testing Aura Protocol Backend"
 echo "================================"
 
 echo -e "\n1️⃣ Health Check..."
-curl -s http://localhost:3001/health | jq
+curl -s http://https://aura-backend-5hi0.onrender.com/health | jq
 
 echo -e "\n2️⃣ Initial Grid Status..."
-curl -s http://localhost:3001/grid-status | jq
+curl -s http://https://aura-backend-5hi0.onrender.com/grid-status | jq
 
 echo -e "\n3️⃣ Triggering Stress Event..."
-curl -s -X POST http://localhost:3001/simulate-stress-event | jq
+curl -s -X POST http://https://aura-backend-5hi0.onrender.com/simulate-stress-event | jq
 
 echo -e "\n4️⃣ Grid Status (Should be STRESSED)..."
-curl -s http://localhost:3001/grid-status | jq
+curl -s http://https://aura-backend-5hi0.onrender.com/grid-status | jq
 
 echo -e "\n⏳ Waiting 5 seconds for transaction confirmation..."
 sleep 5
 
 echo -e "\n5️⃣ Reporting Savings..."
-curl -s -X POST http://localhost:3001/report-savings \
+curl -s -X POST http://https://aura-backend-5hi0.onrender.com/report-savings \
   -H "Content-Type: application/json" \
   -d '{"deviceAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0", "savings": 50}' | jq
 
 echo -e "\n6️⃣ Grid Status (Should be normal)..."
-curl -s http://localhost:3001/grid-status | jq
+curl -s http://https://aura-backend-5hi0.onrender.com/grid-status | jq
 
 echo -e "\n✅ Testing Complete!"
 ```
